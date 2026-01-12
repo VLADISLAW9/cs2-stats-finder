@@ -9,4 +9,4 @@ interface GetLeetifyProfileParams {
 type GetLeetifyProfileConfig = FetchesRequestConfig<GetLeetifyProfileParams>;
 
 export const getLeetifyProfile = ({ params, config }: GetLeetifyProfileConfig) =>
-  leetifyApi.get<LeetifyProfileResponse>('/profile', { ...config, query: { ...params } });
+  leetifyApi.get<GetLeetifyProfileResponse>('/profile', { ...config, query: { ...params } });

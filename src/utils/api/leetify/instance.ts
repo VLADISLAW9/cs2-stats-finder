@@ -7,7 +7,7 @@ export const leetifyApi = fetches.create({
 
 leetifyApi.interceptors.response.use((response) => {
   if (response.status >= 400 && response.status < 500) {
-    toast.error('An unexpected error occurred during the operation');
+    toast.error('Leetify service error');
   }
 
   return response;

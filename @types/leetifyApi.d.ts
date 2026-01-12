@@ -91,4 +91,4 @@ interface LeetifyProfile {
   recent_teammates: RecentTeammate[];
 }
 
-type LeetifyProfileResponse = LeetifyProfile;
+type GetLeetifyProfileResponse = LeetifyProfile;
