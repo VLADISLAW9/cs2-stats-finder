@@ -2,8 +2,8 @@ import type { FetchesRequestConfig } from '@siberiacancode/fetches';
 import { faceitApi } from '../../instance';
 
 interface GetFaceitProfileParams {
-  nickname: string;
-  game?: string;
+  nickname?: string;
+  game?: 'cs2';
   game_player_id?: string;
 }
 

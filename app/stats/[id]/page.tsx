@@ -6,7 +6,8 @@ import { StatsCard, StatsProgress } from './(components)';
 import { getFaceitProfile } from '@/src/utils/api/faceit/requests';
 import { cn } from '@/src/lib/utils';
 import { getColorByFaceitLevel } from './(helpers)';
-import { CheckCircle, CircleCheck, CircleX } from 'lucide-react';
+import { CircleCheck, CircleX } from 'lucide-react';
+import { getSteam64Id } from '@/src/utils/api/requests';
 
 interface StatsPageParams extends Params {
   id: string;
@@ -19,13 +20,15 @@ interface StatsPageProps {
 export const StatsPage = async (props: StatsPageProps) => {
   const params = await props.params;
 
-  const getLeetifyProfileResponse = await getLeetifyProfile({ params: { steam64_id: params.id } });
+  const getSteam64IdResponse = await getSteam64Id({ params: { value: params.id } });
 
-  const getFaceitProfileResponse = await getFaceitProfile({
-    params: { nickname: getLeetifyProfileResponse.data.name }
+  const getLeetifyProfileResponse = await getLeetifyProfile({
+    params: { steam64_id: getSteam64IdResponse.data.steam64Id }
   });
 
-  console.log(getFaceitProfileResponse.data);
+  const getFaceitProfileResponse = await getFaceitProfile({
+    params: { game_player_id: getSteam64IdResponse.data.steam64Id, game: 'cs2' }
+  });
 
   return (
     <div className='flex items-start gap-8'>
