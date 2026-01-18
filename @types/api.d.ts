@@ -1,3 +1,5 @@
-interface GetSteam64IdResponse {
-  steam64Id: string;
+interface GetStatsByIdResponse {
+  steam: GetSteamUserSummariesResponse;
+  leetify: GetLeetifyProfileResponse;
+  faceit: GetFaceitProfileResponse;
 }

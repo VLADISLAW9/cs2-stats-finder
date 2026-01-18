@@ -1,1 +1,1 @@
-export * from './steam-64-id/get';
+export * from './stats/[id]/get';

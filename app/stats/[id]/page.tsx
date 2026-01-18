@@ -1,13 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/src/components/ui/card';
-import { getLeetifyProfile } from '@/src/utils/api/leetify/requests';
 import { Params } from 'next/dist/server/request/params';
 import { StatsCard, StatsProgress } from './(components)';
-import { getFaceitProfile } from '@/src/utils/api/faceit/requests';
 import { cn } from '@/src/lib/utils';
 import { getColorByFaceitLevel } from './(helpers)';
 import { CircleCheck, CircleX } from 'lucide-react';
-import { getSteam64Id } from '@/src/utils/api/requests';
+import { getStatsById } from '@/src/utils/api/requests';
 
 interface StatsPageParams extends Params {
   id: string;
@@ -20,15 +18,9 @@ interface StatsPageProps {
 export const StatsPage = async (props: StatsPageProps) => {
   const params = await props.params;
 
-  const getSteam64IdResponse = await getSteam64Id({ params: { value: params.id } });
+  const getStatsByIdResponse = await getStatsById({ params: { id: params.id } });
 
-  const getLeetifyProfileResponse = await getLeetifyProfile({
-    params: { steam64_id: getSteam64IdResponse.data.steam64Id }
-  });
-
-  const getFaceitProfileResponse = await getFaceitProfile({
-    params: { game_player_id: getSteam64IdResponse.data.steam64Id, game: 'cs2' }
-  });
+  console.log(getStatsByIdResponse);
 
   return (
     <div className='flex items-start gap-8'>
@@ -37,12 +29,12 @@ export const StatsPage = async (props: StatsPageProps) => {
           <AvatarImage src='https://github.com/shadcn.png' alt='avatar' />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <h1 className='font-bold'>{getFaceitProfileResponse.data.steam_nickname}</h1>
+        <h1 className='font-bold'>{getStatsByIdResponse.data.faceit.steam_nickname}</h1>
       </Card>
       <div className='w-[70%] flex flex-col gap-8'>
         <Card>
           <CardHeader>
-            <h1 className='font-bold'>FACEIT CS2 Statistics</h1>
+            <h1 className='font-bold'>Faceit Statistics</h1>
             <p className='text-gray-500 font-bold'>Based on the last 30 Matches</p>
           </CardHeader>
           <CardContent>
@@ -51,25 +43,25 @@ export const StatsPage = async (props: StatsPageProps) => {
                 <h1
                   className={cn(
                     'text-2xl font-bold',
-                    getColorByFaceitLevel(getFaceitProfileResponse.data.games.cs2.skill_level)
+                    getColorByFaceitLevel(getStatsByIdResponse.data.faceit.games.cs2.skill_level)
                   )}
                 >
-                  {getFaceitProfileResponse.data.games.cs2.skill_level}
+                  {getStatsByIdResponse.data.faceit.games.cs2.skill_level}
                 </h1>
                 <p className='text-2xl font-bold'>
-                  {getFaceitProfileResponse.data.games.cs2.faceit_elo}
+                  {getStatsByIdResponse.data.faceit.games.cs2.faceit_elo}
                   <span className='ml-1 text-sm text-zinc-500'>ELO</span>
                 </p>
               </div>
               <div className='flex items-center gap-3'>
-                <h1 className='text-base font-bold'>{getFaceitProfileResponse.data.nickname}</h1>
-                {getFaceitProfileResponse.data.verified && (
+                <h1 className='text-base font-bold'>{getStatsByIdResponse.data.faceit.nickname}</h1>
+                {getStatsByIdResponse.data.faceit.verified && (
                   <CircleCheck className=' h-5 text-yellow-500' />
                 )}
-                {!getFaceitProfileResponse.data.verified && (
+                {!getStatsByIdResponse.data.faceit.verified && (
                   <CircleX className='h-5 text-red-500' />
                 )}
-                <p>{getFaceitProfileResponse.data.country.toLocaleUpperCase()}</p>
+                <p>{getStatsByIdResponse.data.faceit.country.toLocaleUpperCase()}</p>
               </div>
             </div>
           </CardContent>
@@ -81,33 +73,33 @@ export const StatsPage = async (props: StatsPageProps) => {
           </CardHeader>
           <CardContent>
             <div className='flex flex-col w-full gap-5 mb-8'>
-              <StatsProgress title='Aim' value={getLeetifyProfileResponse.data.rating.aim} />
+              <StatsProgress title='Aim' value={getStatsByIdResponse.data.leetify.rating.aim} />
               <StatsProgress
                 title='Head Accuracy'
-                value={getLeetifyProfileResponse.data.stats.accuracy_head}
+                value={getStatsByIdResponse.data.leetify.stats.accuracy_head}
               />
               <StatsProgress
                 title='Spray Accuracy'
-                value={getLeetifyProfileResponse.data.stats.spray_accuracy}
+                value={getStatsByIdResponse.data.leetify.stats.spray_accuracy}
               />
 
               <StatsProgress
                 title='Enemy Spotted Accuracy'
-                value={getLeetifyProfileResponse.data.stats.accuracy_enemy_spotted}
+                value={getStatsByIdResponse.data.leetify.stats.accuracy_enemy_spotted}
               />
             </div>
             <div className='grid grid-flow-col grid-rows-1 gap-4'>
               <StatsCard
                 title='Winrate'
-                value={`${Math.round(getLeetifyProfileResponse.data.winrate * 100)}%`}
+                value={`${Math.round(getStatsByIdResponse.data.leetify.winrate * 100)}%`}
               />
               <StatsCard
                 title='Reaction Time'
-                value={`${Math.round(getLeetifyProfileResponse.data.stats.reaction_time_ms)}ms`}
+                value={`${Math.round(getStatsByIdResponse.data.leetify.stats.reaction_time_ms)}ms`}
               />
               <StatsCard
                 title='Total Matches'
-                value={getLeetifyProfileResponse.data.total_matches}
+                value={getStatsByIdResponse.data.leetify.total_matches}
               />
             </div>
           </CardContent>

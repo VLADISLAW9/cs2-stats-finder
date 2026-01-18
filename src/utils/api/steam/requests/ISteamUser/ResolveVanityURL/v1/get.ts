@@ -3,7 +3,6 @@ import { steamApi } from '../../../../instance';
 
 interface GetSteamUserResolveVanityURLParams {
   vanityurl: string;
-  key: string;
 }
 
 type GetSteamUserResolveVanityURLConfig = FetchesRequestConfig<GetSteamUserResolveVanityURLParams>;
